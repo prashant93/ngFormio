@@ -119,6 +119,15 @@ module.exports = function() {
           return !form.$valid;
         };
 
+        $scope.isVisible = function(component, row) {
+          return FormioUtils.isVisible(
+            component,
+            row,
+            $scope.submission ? $scope.submission.data : null,
+            $scope.hideComponents
+          );
+        };
+        
         // Show the submit message and say the form is no longer submitting.
         var onSubmit = function(submission, message, form) {
           if (message) {
@@ -175,15 +184,6 @@ module.exports = function() {
           else {
             $scope.$emit('formSubmission', submissionData);
           }
-        };
-
-        $scope.isVisible = function(component, row) {
-          return FormioUtils.isVisible(
-            component,
-            row,
-            $scope.submission ? $scope.submission.data : null,
-            $scope.hideComponents
-          );
         };
 
         $scope.isDisabled = function(component) {

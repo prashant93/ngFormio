@@ -61050,6 +61050,53 @@ module.exports = function() {
           submission: true
         });
 
+        // Submit the form from the iframe.
+        $scope.$on('iframe-submission', function(event, submission) {
+          $scope.submitForm(submission);
+        });
+
+        $scope.$on('iframe-pdfReady', function() {
+          var iframe = angular.element('#formio-iframe')[0];
+          if (iframe) {
+            iframeReady.resolve(iframe);
+          }
+        });
+
+        // Called from the submit on iframe.
+        $scope.submitIFrameForm = function() {
+          sendIframeMessage({name: 'getSubmission'});
+        };
+
+        $scope.zoomIn = function() {
+          sendIframeMessage({name: 'zoomIn'});
+        };
+
+        $scope.zoomOut = function() {
+          sendIframeMessage({name: 'zoomOut'});
+        };
+
+        $scope.checkErrors = function(form) {
+          if (form.submitting) {
+            return true;
+          }
+          form.$pristine = false;
+          for (var key in form) {
+            if (form[key] && form[key].hasOwnProperty('$pristine')) {
+              form[key].$pristine = false;
+            }
+          }
+          return !form.$valid;
+        };
+
+        $scope.isVisible = function(component, row) {
+          return FormioUtils.isVisible(
+            component,
+            row,
+            $scope.submission ? $scope.submission.data : null,
+            $scope.hideComponents
+          );
+        };
+
         // Show the submit message and say the form is no longer submitting.
         var onSubmit = function(submission, message, form) {
           if (message) {
@@ -61106,53 +61153,6 @@ module.exports = function() {
           else {
             $scope.$emit('formSubmission', submissionData);
           }
-        };
-
-        // Submit the form from the iframe.
-        $scope.$on('iframe-submission', function(event, submission) {
-          $scope.submitForm(submission);
-        });
-
-        $scope.$on('iframe-pdfReady', function() {
-          var iframe = angular.element('#formio-iframe')[0];
-          if (iframe) {
-            iframeReady.resolve(iframe);
-          }
-        });
-
-        // Called from the submit on iframe.
-        $scope.submitIFrameForm = function() {
-          sendIframeMessage({name: 'getSubmission'});
-        };
-
-        $scope.zoomIn = function() {
-          sendIframeMessage({name: 'zoomIn'});
-        };
-
-        $scope.zoomOut = function() {
-          sendIframeMessage({name: 'zoomOut'});
-        };
-
-        $scope.checkErrors = function(form) {
-          if (form.submitting) {
-            return true;
-          }
-          form.$pristine = false;
-          for (var key in form) {
-            if (form[key] && form[key].hasOwnProperty('$pristine')) {
-              form[key].$pristine = false;
-            }
-          }
-          return !form.$valid;
-        };
-
-        $scope.isVisible = function(component, row) {
-          return FormioUtils.isVisible(
-            component,
-            row,
-            $scope.submission ? $scope.submission.data : null,
-            $scope.hideComponents
-          );
         };
 
         $scope.isDisabled = function(component) {

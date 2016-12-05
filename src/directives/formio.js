@@ -128,6 +128,33 @@ module.exports = function() {
           );
         };
 
+        // Show the submit message and say the form is no longer submitting.
+        var onSubmit = function(submission, message, form) {
+          if (message) {
+            $scope.showAlerts({
+              type: 'success',
+              message: message
+            });
+          }
+          if (form) {
+            form.submitting = false;
+          }
+        };
+
+        // Called when a submission has been made.
+        var onSubmitDone = function(method, submission, form) {
+          var message = '';
+          if ($scope.options && $scope.options.submitMessage) {
+            message = $scope.options.submitMessage;
+          }
+          else {
+            message = 'Submission was ' + ((method === 'put') ? 'updated' : 'created') + '.';
+          }
+          onSubmit(submission, message, form);
+          // Trigger the form submission.
+          $scope.$emit('formSubmission', submission);
+        };
+
         $scope.submitForm = function(submissionData, form) {
           // Allow custom action urls.
           if ($scope.action) {
@@ -161,33 +188,6 @@ module.exports = function() {
 
         $scope.isDisabled = function(component) {
           return $scope.readOnly || component.disabled || (Array.isArray($scope.disableComponents) && $scope.disableComponents.indexOf(component.key) !== -1);
-        };
-
-        // Show the submit message and say the form is no longer submitting.
-        var onSubmit = function(submission, message, form) {
-          if (message) {
-            $scope.showAlerts({
-              type: 'success',
-              message: message
-            });
-          }
-          if (form) {
-            form.submitting = false;
-          }
-        };
-
-        // Called when a submission has been made.
-        var onSubmitDone = function(method, submission, form) {
-          var message = '';
-          if ($scope.options && $scope.options.submitMessage) {
-            message = $scope.options.submitMessage;
-          }
-          else {
-            message = 'Submission was ' + ((method === 'put') ? 'updated' : 'created') + '.';
-          }
-          onSubmit(submission, message, form);
-          // Trigger the form submission.
-          $scope.$emit('formSubmission', submission);
         };
 
         // Called when the form is submitted.

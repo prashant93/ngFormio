@@ -263,10 +263,10 @@ module.exports = function() {
           // Save to specified action.
           if ($scope.action) {
             var method = submissionData._id ? 'put' : 'post';
-            $http[method]($scope.action, submissionData).success(function(submission) {
+            $http[method]($scope.action, submissionData).then(function(submission) {
               Formio.clearCache();
               onDone(submission);
-            }).error(FormioScope.onError($scope, $element));
+            }, FormioScope.onError($scope, $element));
           }
           else if ($scope.formio && !$scope.formio.noSubmit) {
             $scope.formio.saveSubmission(submissionData).then(onDone).catch(FormioScope.onError($scope, $element));
@@ -356,7 +356,8 @@ module.exports = function() {
             }
           });
 
-          if (hasConditionalPages) {
+          // FOR-71
+          if (!$scope.builder && hasConditionalPages) {
             $scope.$watch('submission.data', function(data) {
               var newPages = [];
               angular.forEach(allPages, function(page) {
@@ -378,21 +379,24 @@ module.exports = function() {
           showPage();
         };
 
-        $scope.$watch('form', function(form) {
-          if (
-            $scope.src ||
-            !form ||
-            !Object.keys(form).length ||
-            !form.components ||
-            !form.components.length
-          ) {
-            return;
-          }
-          var formUrl = form.project ? '/project/' + form.project : '';
-          formUrl += '/form/' + form._id;
-          $scope.formio = new Formio(formUrl);
-          setForm(form);
-        });
+        // FOR-71
+        if (!$scope.builder) {
+          $scope.$watch('form', function(form) {
+            if (
+              $scope.src ||
+              !form ||
+              !Object.keys(form).length ||
+              !form.components ||
+              !form.components.length
+            ) {
+              return;
+            }
+            var formUrl = form.project ? '/project/' + form.project : '';
+            formUrl += '/form/' + form._id;
+            $scope.formio = new Formio(formUrl);
+            setForm(form);
+          });
+        }
 
         // When the components length changes update the pages.
         $scope.$watch('form.components.length', updatePages);

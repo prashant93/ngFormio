@@ -8,20 +8,21 @@
     <button ng-if="!submission._id && !form.building" type="button" class="btn btn-primary" ng-click="submitIFrameForm()">Submit</button>
   </div>
   <form ng-if="!form.display || (form.display === 'form')" role="form" name="formioForm" ng-submit="onSubmit(formioForm)" novalidate>
-    <div ng-repeat="alert in formioAlerts track by $index" class="alert alert-{{ alert.type }}" role="alert">
-      {{ alert.message | formioTranslate }}
+    <div ng-repeat="alert in formioAlerts track by $index" class="alert alert-{{ alert.type }}" role="alert" ng-if="::!builder">
+      {{ alert.message | formioTranslate:null:builder }}
     </div>
     <!-- DO NOT PUT "track by $index" HERE SINCE DYNAMICALLY ADDING/REMOVING COMPONENTS WILL BREAK -->
     <formio-component
       ng-repeat="component in form.components track by $index"
       component="component"
-      ng-if="isVisible(component)"
+      ng-if="builder ? '::true' : isVisible(component)"
       data="submission.data"
       formio-form="formioForm"
       formio="formio"
       submission="submission"
       hide-components="hideComponents"
       read-only="isDisabled(component, submission.data)"
+      builder="builder"
     ></formio-component>
   </form>
 </div>

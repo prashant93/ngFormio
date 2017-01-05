@@ -18,7 +18,8 @@ module.exports = function(app) {
           prefix: '',
           suffix: '',
           protected: true,
-          persistent: true
+          persistent: true,
+          hidden: false
         }
       });
     }

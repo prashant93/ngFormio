@@ -98,6 +98,7 @@ module.exports = function(app) {
           multiple: false,
           protected: false,
           persistent: true,
+          hidden: false,
           validate: {
             required: false
           },

@@ -12,16 +12,18 @@ module.exports = function(app) {
         controller: ['$scope', function($scope) {
           if ($scope.builder) return;
           // FA-850 - Ensure the checked value is always a boolean object when loaded, then unbind the watch.
-          var loadComplete = $scope.$watch('data.' + $scope.component.key, function() {
-            var boolean = {
-              true: true,
-              false: false
-            };
-            if ($scope.data && $scope.data[$scope.component.key] && !($scope.data[$scope.component.key] instanceof Boolean)) {
-              $scope.data[$scope.component.key] = boolean[$scope.data[$scope.component.key]] || false;
-              loadComplete();
-            }
-          });
+          if ($scope.component.inputType === 'checkbox') {
+            var loadComplete = $scope.$watch('data.' + $scope.component.key, function() {
+              var boolean = {
+                true: true,
+                false: false
+              };
+              if ($scope.data && $scope.data[$scope.component.key] && !($scope.data[$scope.component.key] instanceof Boolean)) {
+                $scope.data[$scope.component.key] = boolean[$scope.data[$scope.component.key]] || false;
+                loadComplete();
+              }
+            });
+          }
         }],
         settings: {
           input: true,
@@ -35,6 +37,9 @@ module.exports = function(app) {
           defaultValue: false,
           protected: false,
           persistent: true,
+          hidden: false,
+          name: '',
+          value: '',
           validate: {
             required: false
           }

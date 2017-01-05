@@ -149,6 +149,7 @@ module.exports = function(app) {
           dayFirst: false,
           protected: false,
           persistent: true,
+          hidden: false,
           validate: {
             custom: ''
           }

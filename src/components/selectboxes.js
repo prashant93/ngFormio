@@ -81,6 +81,7 @@ module.exports = function(app) {
           inline: false,
           protected: false,
           persistent: true,
+          hidden: false,
           validate: {
             required: false
           }

@@ -5,7 +5,7 @@
     <span style="position:absolute;right:10px;top:10px;cursor:pointer;" class="btn btn-default no-disable" ng-click="zoomIn()"><i class="fa fa-search-plus"></i></span>
     <span style="position:absolute;right:10px;top:60px;cursor:pointer;" class="btn btn-default no-disable" ng-click="zoomOut()"><i class="fa fa-search-minus"></i></span>
     <iframe src="{{ form.settings.pdf | trustAsResourceUrl }}" id="formio-iframe" seamless class="formio-iframe"></iframe>
-    <button ng-if="!submission._id && !form.building" type="button" class="btn btn-primary" ng-click="submitIFrameForm()">Submit</button>
+    <button ng-if="!readOnly && !form.building" type="button" class="btn btn-primary" ng-click="submitIFrameForm()">Submit</button>
   </div>
   <form ng-if="!form.display || (form.display === 'form')" role="form" name="formioForm" ng-submit="onSubmit(formioForm)" novalidate>
     <div ng-repeat="alert in formioAlerts track by $index" class="alert alert-{{ alert.type }}" role="alert" ng-if="::!builder">
